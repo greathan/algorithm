@@ -10,73 +10,82 @@ function Iterator(arr) {
 
 Iterator.prototype.hasNext = function() {
 
-    var i = 1;
 
-    var j = 1;
+    var curArr = this.arr[this.cur];
 
-    var next = this.arr[this.cur];
-    var nextInner;
+    //赋值新变量 不改变this的变量
+    var innerCursor = this.innerCur,
+        cursor = this.cur;
 
-     debugger;
+    var next;
 
-    while (next && !next.length) {
+    if (curArr === undefined) return false;
 
-        this.innerCur = -1;
-        next = this.arr[this.cur + i++];
-        
-    }
+    while (curArr !== undefined) {
 
 
-    var l = next.length;
+        next = curArr[++innerCursor];
 
-    if (next && l) {
+        while (next === undefined && innerCursor < curArr.length - 1) {
 
-        while (nextInner === undefined && j <= l) {
-
-            nextInner = next[this.innerCur + j++]
+            next = curArr[innerCursor]
 
         }
 
-        return nextInner !== undefined;
-        
+        if (next === undefined) {
+            innerCursor = -1
+            curArr = this.arr[++cursor]
 
-    }else {
-        return false;
+            if (curArr === undefined) return false
+
+        } else {
+            return true;
+        }
+
+
+
     }
 
-    
-    
-    
 }
 
 Iterator.prototype.next = function() {
 
-    var next = this.arr[this.cur++],
-        nextInner;
 
-    while (next && !next.length) {
-        this.innerCur = 0
-        next = this.arr[++this.cur];
-    }
+    var curArr = this.arr[this.cur];
 
-    var l = next.length;
+    if (curArr === undefined) {
 
-    // debugger;
+        return null
 
-    if (next && l) {
+    } else {
 
-        while (nextInner === undefined && this.innerCur < l) {
+        var next = curArr[++this.innerCur];
 
-            nextInner = next[this.innerCur++]
-    
+        while (next === undefined && this.innerCur < curArr.length - 1) {
+            next = curArr[this.innerCur]
         }
 
-        return nextInner || null;
-        
-    } else {
-        return null
+
+        if (next === undefined) {
+            this.cur++;
+            this.innerCur = -1;
+            return this.next();
+        } else {
+            return next;
+        }
+
+
     }
 
-    
-    
+
+}
+
+Iterator.prototype.reset = function() {
+    this.cur = 0;
+    this.innerCur = -1;
+}
+
+var it = new Iterator([[], [1], [], [2,3], [], [], [5]])
+while (it.hasNext()) {
+    console.log(it.next())
 }
