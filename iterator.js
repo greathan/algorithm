@@ -11,6 +11,8 @@ function Iterator(arr) {
 Iterator.prototype.hasNext = function() {
 
 
+    var l = this.arr.length;
+
     var curArr = this.arr[this.cur];
 
     //赋值新变量 不改变this的变量
@@ -19,9 +21,23 @@ Iterator.prototype.hasNext = function() {
 
     var next;
 
+
+    while (curArr === undefined && cursor < l) {
+        cursor++;
+        curArr = this.arr[cursor];
+    }
+
+
+
     if (curArr === undefined) return false;
 
     while (curArr !== undefined) {
+
+        if (!Array.isArray(curArr)) {
+
+            return true;
+
+        }
 
 
         next = curArr[++innerCursor];
@@ -35,6 +51,10 @@ Iterator.prototype.hasNext = function() {
         if (next === undefined) {
             innerCursor = -1
             curArr = this.arr[++cursor]
+
+            while (curArr === undefined && cursor < l) {
+                curArr = this.arr[++cursor]
+            }
 
             if (curArr === undefined) return false
 
@@ -51,13 +71,27 @@ Iterator.prototype.hasNext = function() {
 Iterator.prototype.next = function() {
 
 
-    var curArr = this.arr[this.cur];
+    var curArr = this.arr[this.cur],
+        l = this.arr.length;
+
+
+    while (curArr === undefined && this.cur < l) {
+        curArr = this.arr[++this.cur]
+    }
+
 
     if (curArr === undefined) {
 
         return null
 
     } else {
+
+        if (!Array.isArray(curArr)) {
+            this.cur++;
+
+            return curArr;
+
+        }
 
         var next = curArr[++this.innerCur];
 
@@ -85,7 +119,7 @@ Iterator.prototype.reset = function() {
     this.innerCur = -1;
 }
 
-var it = new Iterator([[], [1], [], [2,3], [], [], [5]])
+var it = new Iterator([[], [1],2,,[] , [], [2,3], [], [], [5]])
 while (it.hasNext()) {
     console.log(it.next())
 }
