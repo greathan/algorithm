@@ -1,4 +1,4 @@
-
+import _ from 'underscore';
 
 const CARD_SUITS = [
     'hearts',
@@ -30,11 +30,12 @@ function shuffle() {
 
     for (var i = 0, l = CARD_SUITS * CARD_NUM; i < l; i++) {
 
-        let index = Math.round(Math.random() * (temp.length - 1));
-
-        let item = temp.splice(index, 1)[0];
-
-        ret.push(item);
+        let index = i + Math.round(Math.random() * (temp.length - 1));
+   
+        // 元素交换
+        let tmp = ret[index]
+        ret[index] = ret[i]
+        ret[i] = tmp;
     }
 
 
